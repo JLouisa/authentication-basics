@@ -27,7 +27,7 @@ const app = express();
 app.set("views", __dirname);
 app.set("view engine", "ejs");
 
-app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
+app.use(session({ secret: process.env.SECRECT_KEY, resave: false, saveUninitialized: true }));
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
@@ -73,7 +73,7 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => res.render("index", { user: res.locals.currentUser }));
 app.get("/sign-up", (req, res) => res.render("sign-up-form"));
 app.post("/sign-up", async (req, res, next) => {
-  bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
+  bcrypt.hash(req.body.password, +process.env.HASH_NUM, async (err, hashedPassword) => {
     try {
       const user = new User({
         username: req.body.username,
